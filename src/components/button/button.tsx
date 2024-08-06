@@ -1,5 +1,5 @@
 import ButtonMaterial from '@mui/material/Button';
-import ButtonProps from './types';
+import ButtonProps from './button.types';
 
 const Button = ({ text, color, type, onClick, disabled }:ButtonProps) => {
   return (
