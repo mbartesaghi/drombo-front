@@ -1,10 +1,18 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
+import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
+
+//Pages
 import Dashboard from './pages/dashboard/dashboard';
+import DeliveryRequest from './pages/deliveryRequest/deliveryRequest';
+
+//Components
 import NavBar from './components/navBar/navBar';
 import SideBar from './components/sideBar/sideBar';
+
+//Utils
 import * as constants from './utils/constants';
+
 
 const MainStyle = styled('div')(({ theme }) => ({
   flexGrow: 1,
@@ -22,13 +30,23 @@ const MainStyle = styled('div')(({ theme }) => ({
   }
 }));
 
+const THEME = createTheme({
+  typography: {
+    "fontFamily": `"San Francisco", "Helvetica", "Arial", sans-serif`,
+    "fontSize": 14,
+    "fontWeightLight": 300,
+    "fontWeightRegular": 400,
+    "fontWeightMedium": 500
+  }
+});
+
 function App() {
 
   const Layout = () => {
     return (
       <div>
         <NavBar />
-        <div style={{display:'flex'}}>
+        <div style={{ display: 'flex' }}>
           <SideBar />
           <MainStyle>
             <Outlet />
@@ -40,8 +58,8 @@ function App() {
 
   const router = createBrowserRouter([
     {
-      path: "/",
-      element:<Layout />,
+      path: constants.dashboardURL,
+      element: <Layout />,
       children: [
         {
           path: constants.dashboardURL,
@@ -49,7 +67,7 @@ function App() {
         },
         {
           path: constants.requestDeliveryURL,
-          element: <div>Solicitud de pedido</div>
+          element: <DeliveryRequest />
         },
         {
           path: constants.deliveryHistoryURL,
@@ -60,7 +78,9 @@ function App() {
   ]);
 
   return (
-    <RouterProvider router={router} />
+    <ThemeProvider theme={THEME}>
+      <RouterProvider router={router} />
+    </ThemeProvider>
   );
 }
 

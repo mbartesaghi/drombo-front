@@ -1,11 +1,11 @@
 import { CardWrapper, CardTitle, ContentWrapper } from './styles';
 import CardProps from './card.types';
 
-const Card = ({title, icon, width, children}:CardProps) => {
+const Card = ({ title, icon, children }: CardProps) => {
   return (
-    <CardWrapper width={width}>
+    <CardWrapper >
       <CardTitle>
-        {title} 
+        <p>{title}</p>
         <img src={icon} width={'42px'} />
       </CardTitle>
       <ContentWrapper>

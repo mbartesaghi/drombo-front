@@ -5,10 +5,9 @@ interface CardWrapperProps {
 }
 
 export const CardWrapper = styled.div<CardWrapperProps>`
-  width: ${props =>  props.width || '400px'};
+  width: 400px;
   height: 200px;
   padding: 20px;
-  margin: 20px 5px;
   background-color: white;
   display: flex;
   border: 1px solid #efefef;
@@ -16,6 +15,7 @@ export const CardWrapper = styled.div<CardWrapperProps>`
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   flex-direction: column;
   flex-wrap: wrap;
+  flex-grow: 1;
 `
 
 export const CardTitle = styled.div`
