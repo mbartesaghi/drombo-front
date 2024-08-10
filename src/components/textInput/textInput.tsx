@@ -1,7 +1,7 @@
 import TextInputProps from './textInput.types';
 import { StyledFormControl, StyledTextField } from './styles';
 
-const TextInput = ({ labelText, width, placeholder, value }: TextInputProps) => {
+const TextInput = ({ labelText, width, placeholder, value, onChange }: TextInputProps) => {
   return (
     <StyledFormControl>
       <StyledTextField
@@ -10,6 +10,7 @@ const TextInput = ({ labelText, width, placeholder, value }: TextInputProps) => 
         placeholder={placeholder}
         value={value}
         sx={{ width: width }}
+        onChange={onChange}
       />
     </StyledFormControl>
   );

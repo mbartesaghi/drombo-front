@@ -64,9 +64,7 @@ const DeliveryRequest = () => {
 
       <FormWrapper>
         {suministros.map(id => (
-          <SuministroWrapper key={id}>
-            <Suministro id={id} remove={deleteSuministro} />
-          </SuministroWrapper>
+            <Suministro key={id} id={id} remove={deleteSuministro} />
         ))}
       </FormWrapper>
 
@@ -76,8 +74,8 @@ const DeliveryRequest = () => {
 					color="primary" 
 					onClick={addSuministro} 
 					style={{ marginTop: '16px', alignSelf: 'flex-end' }}
-				>
-					Agregar Suministro
+					>
+						Agregar Suministro
 				</Button>
       	</AddButtonWrapper>
     	</Section>

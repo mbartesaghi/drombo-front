@@ -28,6 +28,10 @@ const Suministro = ({ id, remove }: SuministroProps)  => {
   const [dimensiones, setDimensiones] = useState('');
   const [indicaciones, setIndicaciones] = useState('');
 
+  const handleInputChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setter(event.target.value);
+  };
+
   const clearInputs = () => {
     setNombre('');
     setCantidad('');
@@ -45,11 +49,11 @@ const Suministro = ({ id, remove }: SuministroProps)  => {
         </DropdownWrapper>
         
         <InputsWrapper>
-          <TextInput labelText="Nombre" width="100%" value={nombre} />
-          <TextInput labelText="Cantidad" width="100%" value={cantidad} />
-          <TextInput labelText="Peso" width="100%" value={peso} />
-          <TextInput labelText="Dimensiones" width="100%" value={dimensiones} />
-          <TextInput labelText="Indicaciones" width="100%" value={indicaciones} />
+          <TextInput labelText="Nombre" width="100%" value={nombre} onChange={handleInputChange(setNombre)} />
+          <TextInput labelText="Cantidad" width="100%" value={cantidad} onChange={handleInputChange(setCantidad)} />
+          <TextInput labelText="Peso (g)" width="100%" value={peso} onChange={handleInputChange(setPeso)} />
+          <TextInput labelText="Dimensiones" width="100%" value={dimensiones} onChange={handleInputChange(setDimensiones)} />
+          <TextInput labelText="Indicaciones" width="100%" value={indicaciones} onChange={handleInputChange(setIndicaciones)} />
         
         </InputsWrapper>
       </CardContent>
