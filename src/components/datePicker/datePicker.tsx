@@ -1,11 +1,13 @@
+import { DatePicker as MaterialDatePicker } from "@mui/x-date-pickers"
 
-const DatePicker = () => {
+interface DatePickerProps {
+  label: string;
+}
+
+const DatePicker = ({ label }: DatePickerProps) => {
   return (
-    <>
-    </>
+    <MaterialDatePicker label={label} />
   );
 }
 
 export default DatePicker;
-
-

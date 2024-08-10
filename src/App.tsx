@@ -1,6 +1,8 @@
 import './App.css';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 //Pages
 import Dashboard from './pages/dashboard/dashboard';
@@ -78,9 +80,11 @@ function App() {
   ]);
 
   return (
-    <ThemeProvider theme={THEME}>
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ThemeProvider theme={THEME}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 
