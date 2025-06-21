@@ -1,65 +1,19 @@
 import React from 'react';
-import { FormControl, Input, styled } from '@mui/material';
 import TextInputProps from './textInput.types';
+import { twMerge } from 'tailwind-merge';
 
-const blue = {
-  100: '#DAECFF',
-  200: '#80BFFF',
-  400: '#3399FF',
-  500: '#007FFF',
-  600: '#0072E5',
-};
-
-const grey = {
-  50: '#F3F6F9',
-  100: '#E5EAF2',
-  200: '#DAE2ED',
-  300: '#C7D0DD',
-  400: '#B0B8C4',
-  500: '#9DA8B7',
-  600: '#6B7A90',
-  700: '#434D5B',
-  800: '#303740',
-  900: '#1C2025',
-};
-
-const InputElement = styled('input')(
-  ({ theme }) => `
-    width: 365px;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: ${theme.palette.mode === 'dark' ? grey[300] : grey[900]};
-    background: ${theme.palette.mode === 'dark' ? grey[900] : '#fff'};
-    border: 1px solid ${theme.palette.mode === 'dark' ? grey[700] : grey[200]};
-    box-shadow: 0px 2px 2px ${theme.palette.mode === 'dark' ? grey[900] : grey[50]};
-
-    &:hover {
-      border-color: ${blue[400]};
-    }
-
-    &:focus {
-      border-color: ${blue[400]};
-    }
-
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `,
-);
-
-const TextInput = ({ labelText, width }: TextInputProps) => {
-
+const TextInput: React.FC<TextInputProps> = ({ labelText, width = "100%", value, onChange, type = "text", className }) => {
   return (
-    <FormControl defaultValue="" required>
-      <label>{labelText}</label>
-      <InputElement sx={{ width: width }} placeholder="Elige el destino" />
-    </FormControl>
+    <div className={twMerge("flex flex-col gap-1", className)} style={{ width }}>
+      <label className="text-sm text-gray-600 font-medium">{labelText}</label>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        className="border border-gray-300 rounded-md px-3 py-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+      />
+    </div>
   );
-}
+};
 
 export default TextInput;

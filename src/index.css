@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @font-face {
   font-family: "San Francisco";
   src: url("fonts/SF-Pro-Text-Regular.otf") format('opentype');

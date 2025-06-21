@@ -1,8 +1,9 @@
+import { ReactNode } from "react";
+import { SvgIconComponent } from "@mui/icons-material";
 
-interface CardProps {
+export default interface CardProps {
   title: string;
-  icon?: string;
-  children?: React.ReactNode;
+  icon?: SvgIconComponent;
+  children: ReactNode;
+  iconColor?: string;
 }
-
-export default CardProps;

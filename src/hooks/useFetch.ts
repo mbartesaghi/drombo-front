@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios, { AxiosError } from 'axios';
 import { CustomError, FetchResult } from './hooks.types';
 
-const useFetch = <T,>(url: string): FetchResult<T> => {
+const useFetch = <T = unknown>(url: string): FetchResult<T> => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -10,7 +10,7 @@ const useFetch = <T,>(url: string): FetchResult<T> => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<T>(url);
+        const response = await axios.get<T>('http://127.0.0.1:5000/' + url);
         setData(response.data);
         setLoading(false);
       } catch (error) {

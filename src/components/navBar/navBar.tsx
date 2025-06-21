@@ -1,11 +1,9 @@
-import { NavBarWrapper } from './styles';
-
 const NavBar = () => {
   return (
-    <NavBarWrapper>
+    <div className="w-full h-10 px-5 py-5 bg-white border-b border-gray-300 justify-center">
       <span>DROMBO LOGO</span>
-    </NavBarWrapper>
+    </div>
   );
-}
+};
 
 export default NavBar;

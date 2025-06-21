@@ -12,17 +12,17 @@ import SideBar from './components/sideBar/sideBar';
 
 //Utils
 import * as constants from './utils/constants';
+import Routes from './pages/routes';
 
 
 const MainStyle = styled('div')(({ theme }) => ({
   flexGrow: 1,
   overflow: 'auto',
   minHeight: '100%',
-  backgroundColor: '#f6f6f8',
+  backgroundColor: '#f9fafb',
   paddingTop: 20,
   paddingLeft: theme.spacing(1),
   paddingRight: theme.spacing(1),
-  paddingBottom: theme.spacing(10),
   [theme.breakpoints.up('lg')]: {
     paddingTop: 24,
     paddingLeft: theme.spacing(2),
@@ -44,13 +44,13 @@ function App() {
 
   const Layout = () => {
     return (
-      <div>
+      <div className="min-h-screen flex flex-col bg-gray-50">
         <NavBar />
-        <div style={{ display: 'flex' }}>
+        <div className="flex flex-1 overflow-hidden">
           <SideBar />
-          <MainStyle>
+          <main className="flex-1 overflow-y-auto p-6">
             <Outlet />
-          </MainStyle>
+          </main>
         </div>
       </div>
     );
@@ -72,6 +72,10 @@ function App() {
         {
           path: constants.deliveryHistoryURL,
           element: <div>Solicitud de pedido</div>
+        },
+        {
+          path: constants.routesURL,
+          element: <Routes />
         }
       ]
     },
