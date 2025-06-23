@@ -5,6 +5,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import usePost from "../../hooks/usePost";
 import { Transfer } from "../../utils/common.types";
 import { getRandomId } from "../../utils/helpers";
+import SuccessAlert from "../../components/SuccessAlert";
+import SuccessToast from "../../components/SuccessAlert";
 
 type requestTransferResponse = {
   transferId: string;
@@ -21,7 +23,14 @@ const EMPTY_TRANSFER_DETAILS = {
   compartment: '',
   urgency: 'baja',
   clinic_id: '',
+  clinic: {
+    id: '',
+    name: '',
+    latitude: 0,
+    longitude: 0
+  },
 }
+
 
 const EMPTY_SUPPLY_DETAILS = {
   id: getRandomId(),
@@ -35,9 +44,14 @@ const DeliveryRequest = () => {
   const [transferDetails, setTransferDetails] = useState<Transfer>(EMPTY_TRANSFER_DETAILS);
   const [supplies, setSupplies] = useState([EMPTY_SUPPLY_DETAILS]);
   const { postData, data, loading, error } = usePost<requestTransferResponse>('/transfers');
+  const [showToast, setShowToast] = useState(false);
 
   const handleSubmit = () => {
-    postData(transferDetails);
+    postData({
+      ...transferDetails,
+      supplies
+    });
+    setShowToast(true);
   };
 
   const addSupply = () => {
@@ -56,9 +70,9 @@ const DeliveryRequest = () => {
   };
 
   const sizeDescriptions: Record<string, string> = {
-    chico: "20x20x10 cm",
-    mediano: "35x25x10 cm",
-    grande: "50x30x10 cm",
+    SMALL: "20x20x10 cm",
+    MEDIUM: "35x25x10 cm",
+    BIG: "50x30x10 cm",
   };
 
   const updateSupply = (id: number, field: string, value: string | number) => {
@@ -87,7 +101,7 @@ const DeliveryRequest = () => {
           <TextInput className="col-span-2" labelText="Solicitante" type="text" onChange={(e) => setTransferDetails({...transferDetails, requester: e.target.value})} />
           <Dropdown
             labelText="Policlínica"
-            options={[{ value: "clinic1", label: "Curtinas" }, { value: "clinic2", label: "Curtinas2" },  { value: "clinic3", label: "Curtinas3" }]}
+            options={[{ value: "1", label: "Tambores" }, { value: "2", label: "Curtinas" },  { value: "3", label: "Sauce del Batovi" }, { value: "4", label: "Ansina" }, { value: "5", label: "Rivera" }, { value: "6", label: "Piedra Sola" }]}
             onChange={(v) => setTransferDetails({...transferDetails, clinic_id: v})}
           />
           <Dropdown
@@ -115,9 +129,9 @@ const DeliveryRequest = () => {
             <Dropdown
               labelText="Tamaño del compartimento"
               options={[
-                { value: "grande", label: "Grande" },
-                { value: "mediano", label: "Mediano" },
-                { value: "chico", label: "Chico" },
+                { value: "BIG", label: "Grande" },
+                { value: "MEDIUM", label: "Mediano" },
+                { value: "SMALL", label: "Chico" },
               ]}
               onChange={v => setTransferDetails({...transferDetails, compartment: v})}
               value={transferDetails.compartment}
@@ -158,6 +172,11 @@ const DeliveryRequest = () => {
 
           
       </div>
+      <SuccessToast
+        message="Traslado solicitado correctamente"
+        show={showToast}
+        onClose={() => setShowToast(false)}
+      />
     </div>
   );
 };

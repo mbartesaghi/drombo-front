@@ -6,6 +6,7 @@ import DeliveryIcon from '@mui/icons-material/LocalShipping';
 import BuildIcon from '@mui/icons-material/Build';
 import useFetch from '../../hooks/useFetch';
 import { Transfer } from '../../utils/common.types';
+import { Timeline } from '@mui/icons-material';
 
 const Dashboard = () => {
   const { data: transfers, loading, error } = useFetch<Transfer[]>('transfers');
@@ -20,11 +21,11 @@ const Dashboard = () => {
         </Card>
         <Card title='Traslados pendientes' icon={DeliveryIcon} iconColor='text-yellow-500'>
           <p className="text-4xl font-bold text-yellow-500">{transfers?.length || 0}</p>
-          <span className="text-sm text-gray-500 mt-4">Próximo: 14:30 hrs</span>
+          <span className="text-sm text-gray-500 mt-4"></span>
         </Card>
-        <Card title='Último mantenimiento' icon={BuildIcon} iconColor='text-blue-600'>
-          <p className="text-4xl font-bold text-blue-600">12/04</p>
-          <span className="text-sm text-gray-500 mt-4">Próximo en 3 días</span>
+        <Card title='Rutas programadas' icon={Timeline} iconColor='text-blue-600'>
+          <p className="text-4xl font-bold text-blue-600">4</p>
+          <span className="text-sm text-gray-500 mt-4">Próxima: 14:30 hrs</span>
         </Card>
       </div>
       <CustomTable transfers={transfers ?? []} />

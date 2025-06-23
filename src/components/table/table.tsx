@@ -36,7 +36,7 @@ const getStatusStyle = (state: FlightInfo["state"]) => {
 const CustomTable: React.FC<{ transfers: Transfer[] }> = ({ transfers }) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 mt-4">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Próximos vuelos</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Solicitudes de translados</h2>
       <div className="overflow-x-auto max-h-[50vh] overflow-y-auto rounded-xl">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="sticky top-0 z-10 bg-white shadow-sm">

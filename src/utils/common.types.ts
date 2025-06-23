@@ -10,6 +10,8 @@ export interface Transfer {
   compartment: string,
   urgency: string,
   clinic_id: string,
+  clinic: Clinic,
+  estimated_arrival_time?: string
 }
 
 export interface Supply {
@@ -18,4 +20,22 @@ export interface Supply {
   quantity: number,
   weight: number,
   notes: string
+}
+
+export interface Route {
+  id: string,
+  transfer_ids: string,
+  start_time: string,
+  end_time: string,
+  transfers: Transfer[],
+  status: string,
+  date: string,
+  weight: number
+}
+
+export interface Clinic {
+  id: string,
+  name: string,
+  latitude: number,
+  longitude: number
 }
