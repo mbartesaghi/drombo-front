@@ -10,12 +10,15 @@ export interface Transfer {
   compartment: string,
   urgency: string,
   clinic_id: string,
-  clinic: Clinic,
-  estimated_arrival_time?: string
+  clinic?: Clinic,
+  estimated_arrival_date?: string,
+  estimated_arrival_time?: string,
+  status?: string,
+  supplies?: Supply[]
 }
 
 export interface Supply {
-  id: string,
+  id: number,
   name: string,
   quantity: number,
   weight: number,

@@ -1,34 +1,28 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TextInput from "../../components/textInput/textInput";
 import Dropdown from "../../components/dropdown/dropdown";
 import DeleteIcon from "@mui/icons-material/Delete";
 import usePost from "../../hooks/usePost";
-import { Transfer } from "../../utils/common.types";
-import { getRandomId } from "../../utils/helpers";
-import SuccessAlert from "../../components/SuccessAlert";
+import { Supply, Transfer } from "../../utils/common.types";
+import { getCompartmentSize, getRandomId } from "../../utils/helpers";
 import SuccessToast from "../../components/SuccessAlert";
+import ToggleSwitch from "../../components/ToggleSwitch";
 
 type requestTransferResponse = {
   transferId: string;
 }
 
 const EMPTY_TRANSFER_DETAILS = {
-  type: "pedido",
+  type: "Envio",
   request_date: new Date().toISOString().split('T')[0],
   requester: '',
   start_date: '',
   end_date: '',
   start_time: '',
   end_time: '',
-  compartment: '',
+  compartment: 'SMALL',
   urgency: 'baja',
-  clinic_id: '',
-  clinic: {
-    id: '',
-    name: '',
-    latitude: 0,
-    longitude: 0
-  },
+  clinic_id: '1'
 }
 
 
@@ -40,19 +34,85 @@ const EMPTY_SUPPLY_DETAILS = {
   notes: ""
 }
 
+interface SupplyError {
+  id: number;
+  field: string;
+  message: string;
+}
+
 const DeliveryRequest = () => {
   const [transferDetails, setTransferDetails] = useState<Transfer>(EMPTY_TRANSFER_DETAILS);
   const [supplies, setSupplies] = useState([EMPTY_SUPPLY_DETAILS]);
   const { postData, data, loading, error } = usePost<requestTransferResponse>('/transfers');
   const [showToast, setShowToast] = useState(false);
+  const [errors, setErrors] = useState({ startTime: false, startDate: false, endTime: false, endDate: false, requester: false });
+  const [suppliesErrors, setSuppliesErrors] = useState<SupplyError[]>([])
 
   const handleSubmit = () => {
+    if (!validateTransferData()) return
+    const validationErrors = validateSupplies(supplies);
+    setSuppliesErrors(validationErrors);
+    console.log("validationErrors", validationErrors)
+    if(validationErrors.length > 0) return;
+
     postData({
       ...transferDetails,
       supplies
     });
     setShowToast(true);
   };
+
+  const validateTransferData = () => {
+    if(!transferDetails.requester) {
+      setErrors({...errors, requester: true})
+      return false
+    }
+    if(transferDetails.start_date > transferDetails.end_date) {
+      setErrors({...errors, startDate: true, endDate: true})
+      return false
+    }
+    if(transferDetails.start_time > transferDetails.end_time) {
+      setErrors({...errors, startTime: true, endTime: true})
+      return false
+    }
+    return true
+  }
+
+  const getFieldError = (supplyId: number, field: string) =>
+    suppliesErrors.find(e => e.id === supplyId && e.field === field);
+
+  const validateSupplies = (supplies: Supply[]): any[] => {
+    const errors: any[] = [];
+    
+    supplies.forEach((supply) => {
+      if (!supply.name.trim()) {
+        errors.push({
+          id: supply.id,
+          field: "name",
+          message: "El nombre es obligatorio.",
+        });
+      }
+  
+      if (!supply.quantity || supply.quantity <= 0) {
+        errors.push({
+          id: supply.id,
+          field: "quantity",
+          message: "La cantidad debe ser mayor a 0.",
+        });
+      }
+  
+      if (!supply.weight || supply.weight <= 0) {
+        errors.push({
+          id: supply.id,
+          field: "weight",
+          message: "El peso debe ser mayor a 0.",
+        });
+      }
+    });
+  
+    return errors;
+  }
+  
 
   const addSupply = () => {
     const id = getRandomId()
@@ -67,12 +127,6 @@ const DeliveryRequest = () => {
 
   const removeSupply = (id: number) => {
     setSupplies((prev) => prev.filter((s) => s.id !== id));
-  };
-
-  const sizeDescriptions: Record<string, string> = {
-    SMALL: "20x20x10 cm",
-    MEDIUM: "35x25x10 cm",
-    BIG: "50x30x10 cm",
   };
 
   const updateSupply = (id: number, field: string, value: string | number) => {
@@ -96,8 +150,13 @@ const DeliveryRequest = () => {
       </div>
 
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-gray-700 mb-4">Detalles del envío</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <ToggleSwitch
+            optionA="Envio"
+            optionB="Pedido"
+            value={transferDetails.type}
+            onChange={(v) => setTransferDetails({...transferDetails, type: v})}
+          />
           <TextInput className="col-span-2" labelText="Solicitante" type="text" onChange={(e) => setTransferDetails({...transferDetails, requester: e.target.value})} />
           <Dropdown
             labelText="Policlínica"
@@ -113,10 +172,30 @@ const DeliveryRequest = () => {
             ]}
             onChange={(v) => setTransferDetails({...transferDetails, urgency: v})}
           />
-          <TextInput labelText="Fecha inicio" type="date" onChange={(e) => setTransferDetails({...transferDetails, start_date: e.target.value})} />
-          <TextInput labelText="Fecha fin" type="date" onChange={(e) => setTransferDetails({...transferDetails, end_date: e.target.value})} />
-          <TextInput labelText="Horario inicio" type="time" onChange={(e) => setTransferDetails({...transferDetails, start_time: e.target.value})} />
-          <TextInput labelText="Horario fin" type="time" onChange={(e) => setTransferDetails({...transferDetails, end_time: e.target.value})} />
+          <TextInput 
+            labelText="Fecha inicio" 
+            type="date"
+            error={errors.startDate} 
+            onChange={(e) => setTransferDetails({...transferDetails, start_date: e.target.value})} 
+          />
+          <TextInput 
+            labelText="Fecha fin" 
+            type="date" 
+            error={errors.endDate} 
+            onChange={(e) => setTransferDetails({...transferDetails, end_date: e.target.value})} 
+          />
+          <TextInput 
+            labelText="Horario inicio"
+            type="time" 
+            error={errors.startTime} 
+            onChange={(e) => setTransferDetails({...transferDetails, start_time: e.target.value})} 
+          />
+          <TextInput 
+            labelText="Horario fin" 
+            type="time" 
+            error={errors.endTime} 
+            onChange={(e) => setTransferDetails({...transferDetails, end_time: e.target.value})} 
+          />
           
         </div>
       </div>
@@ -137,7 +216,7 @@ const DeliveryRequest = () => {
               value={transferDetails.compartment}
               placeholder="Selecciona una opción"
             />
-              <p className="w-[40%] mt-5 text-sm text-gray-500">{transferDetails.compartment && `Dimensiones: ${sizeDescriptions[transferDetails.compartment]}`}
+              <p className="w-[40%] mt-5 text-sm text-gray-500">{transferDetails.compartment && `Dimensiones: ${getCompartmentSize(transferDetails.compartment)}`}
               </p>
           </div>
         </div>
@@ -147,10 +226,30 @@ const DeliveryRequest = () => {
             key={supply.id}
             className="border border-gray-200 rounded-lg bg-gray-50 p-4 mb-4 flex flex-col md:flex-row items-start md:items-center gap-4"
           >
-            <TextInput labelText="Suministro" width="100%" onChange={(e) => updateSupply(supply.id, 'name', e.target.value)} />
-            <TextInput labelText="Cantidad" type="number" width="120px" onChange={(e) => updateSupply(supply.id, 'quantity', Number(e.target.value))} />
-            <TextInput labelText="Peso (g)" type="number" width="120px" onChange={(e) => updateSupply(supply.id, 'weight', Number(e.target.value))} />
-            <TextInput labelText="Indicaciones" width="100%" onChange={(e) => updateSupply(supply.id, 'notes', e.target.value)} />
+            <TextInput 
+              labelText="Suministro" 
+              width="100%" 
+              onChange={(e) => updateSupply(supply.id, 'name', e.target.value)} 
+              error={!!getFieldError(supply.id, "name")}
+            />
+            <TextInput 
+              labelText="Cantidad" 
+              type="number" width="120px" 
+              onChange={(e) => updateSupply(supply.id, 'quantity', Number(e.target.value))}
+              error={!!getFieldError(supply.id, "quantity")}
+            />
+            <TextInput 
+              labelText="Peso (g)" 
+              type="number" 
+              width="120px" 
+              onChange={(e) => updateSupply(supply.id, 'weight', Number(e.target.value))} 
+              error={!!getFieldError(supply.id, "weight")}
+            />
+            <TextInput 
+              labelText="Indicaciones" 
+              width="100%" 
+              onChange={(e) => updateSupply(supply.id, 'notes', e.target.value)} 
+            />
             
             <button
               type="button"

@@ -7,6 +7,7 @@ import moment from 'moment';
 import { Transfer, Route } from '../utils/common.types';
 import useFetch from '../hooks/useFetch';
 import 'moment/locale/es';  
+import TransferDetailsModal from '../components/TransferDetailModal';
 
 moment.locale('es'); 
 
@@ -19,6 +20,7 @@ export default function Routes() {
 
   const [date, setDate] = useState(getTodayDate());
   const { data: routes = [], loading, error } = useFetch<Route[]>(`routes`);
+	const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
 
 	console.log(routes)
 
@@ -35,19 +37,17 @@ export default function Routes() {
 		
   return (
     <div className="p-6 max-w-4xl mx-auto">
+			{selectedTransfer && (
+				<TransferDetailsModal
+					transfer={selectedTransfer}
+					onClose={() => setSelectedTransfer(null)}
+				/>
+			)}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           <RoomIcon className="text-indigo-600" /> Rutas generadas
           <p className='font-light'>{moment(date).format("DD/MM/yyyy")} - {moment(date).add(7, 'days').format("DD/MM/yyyy")}</p>
         </h2>
-        {/* <div className='flex flex-row items-center gap-2'>
-				<input
-					type="date"
-					value={date}
-					onChange={(e) => setDate(e.target.value)}
-					className="border border-gray-300 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-				/>
-        </div> */}
       </div>
 
       {loading ? (
@@ -100,11 +100,14 @@ export default function Routes() {
 															<li key={t.id} className="flex items-center text-sm text-gray-600 border-b pb-1 gap-8">
 																<div className='w-72'>
 																	<RoomIcon className="w-4 h-4 mr-2 text-indigo-400" />
-																	<span className="font-mono">{t.clinic.name}</span>
+																	<span className="font-mono">{t.clinic?.name}</span>
 																</div>
 																<span className="font-mono w-44">{t.type}</span>
 																<span className="ml-auto text-xs text-gray-400">{t.estimated_arrival_time?.slice(0, 5)}</span>
-																<span className="cursor-pointer"><InfoOutlinedIcon /></span>
+																<span 
+																	className="cursor-pointer" 
+																	onClick={() => setSelectedTransfer(t)}
+																><InfoOutlinedIcon /></span>
 															</li>
 														))}
 														<li key={'depot'} className="flex items-center text-sm text-gray-600 border-b pb-1 gap-8">

@@ -5,6 +5,7 @@ interface TextInputProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   className?: string;
+  error?: boolean;
 }
 
 export default TextInputProps;
