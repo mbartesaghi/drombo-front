@@ -1,6 +1,7 @@
 import React from "react";
 import { Supply, Transfer } from "../utils/common.types";
 import { formatDate, getCompartmentSize, getCompartmentText, getTransferStatusText, getTransferUrgencyText, toUpperCase } from "../utils/helpers";
+import { twMerge } from "tailwind-merge";
 
 interface TransferDetailsModalProps {
   transfer: Transfer | null;
@@ -16,6 +17,37 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
     }, 0).toString() ?? "0";
   }
 
+  const getClinicFrom = () => {
+    if(transfer.type === "envio") {
+      return transfer.clinic?.name
+    } else {
+      return "Hospital de Tacuarembo"
+    }
+  }
+  
+  const getClinicTo = () => {
+    if(transfer.type === "envio") {
+      return "Hospital de Tacuarembo"
+    } else {
+      return transfer.clinic?.name
+    }
+  }
+
+  const getStatusStyle = (state: string | undefined) => {
+    switch (state) {
+      case "pendiente":
+        return "bg-yellow-100 text-yellow-800 ring-yellow-400/30";
+      case "confirmado":
+        return "bg-blue-100 text-blue-800 ring-blue-400/30";
+      case "entregado":
+        return "bg-green-100 text-green-800 ring-green-400/30";
+      case "rechazado":
+        return "bg-red-100 text-red-800 ring-red-400/30";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 px-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl p-6 overflow-y-auto max-h-[90vh] relative">
@@ -26,14 +58,14 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
           &times;
         </button>
 
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Detalles del traslado</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">{getClinicFrom()} → {getClinicTo()}</h2>
+        <div className="flex gap-4">
+          <Field label="" value={getTransferStatusText(transfer.status)} className={`inline-flex items-center gap-2 w-fit rounded-full px-3 py-1 text-xs font-medium ring-1 ring-inset ${getStatusStyle(transfer.status)}`} />
+          <label>{transfer.requester} · {formatDate(transfer.request_date)}</label>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-          <Field label="Tipo" value={toUpperCase(transfer.type)} />
-          <Field label="Clínica" value={transfer.clinic?.name ?? "N/A"} />
-          <Field label="Estado" value={getTransferStatusText(transfer.status)} />
-          <Field label="Solicitado por" value={transfer.requester} />
-          <Field label="Fecha de solicitud" value={formatDate(transfer.request_date)} />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 mt-6">
           <Field label="Rango de días" value={`${formatDate(transfer.start_date)} → ${formatDate(transfer.end_date)}`} />
           <Field label="Franja horaria" value={`${transfer.start_time} - ${transfer.end_time}`} />
           <Field label="Urgencia" value={getTransferUrgencyText(transfer.urgency)} />
@@ -74,11 +106,12 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
   );
 }
 
-function Field({ label, value }: { label: string; value: string }) {
+function Field({ label, value, className }: { label: string; value: string, className?: string }) {
+  
   return (
     <div className="flex flex-col">
       <span className="text-xs text-gray-500">{label}</span>
-      <span className="font-medium">{value}</span>
+      <span className={twMerge("font-medium", className)}>{value}</span>
     </div>
   );
 }

@@ -16,10 +16,10 @@ function capitalize(str: string) {
 } 
 
 export default function Routes() {
-  const getTodayDate = () => new Date().toISOString().split('T')[0];
+	const getTodayDate = () => new Date().toISOString().split('T')[0];
 
-  const [date, setDate] = useState(getTodayDate());
-  const { data: routes = [], loading, error } = useFetch<Route[]>(`routes`);
+	const [date, setDate] = useState(getTodayDate());
+	const { data: routes = [], loading, error } = useFetch<Route[]>(`routes`);
 	const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
 
 	console.log(routes)
@@ -34,15 +34,20 @@ export default function Routes() {
 			return acc;
 		}, {});
 	}
-		
+
+	const canSendToRigitech = (index: number) => {
+		const previousRoutes = routes ? routes.slice(0, index + 1) : [];
+		return previousRoutes.every(route => route.status === "READY_FOR_START");
+	}
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
-			{selectedTransfer && (
-				<TransferDetailsModal
-					transfer={selectedTransfer}
-					onClose={() => setSelectedTransfer(null)}
-				/>
-			)}
+		{selectedTransfer && (
+			<TransferDetailsModal
+				transfer={selectedTransfer}
+				onClose={() => setSelectedTransfer(null)}
+			/>
+		)}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center gap-2">
           <RoomIcon className="text-indigo-600" /> Rutas generadas
@@ -56,7 +61,7 @@ export default function Routes() {
         <div className="flex flex-col gap-6">
           {routes?.length === 0 ? (
             <div className="text-center text-gray-400 py-8">
-              No hay rutas generadas para la fecha seleccionada.
+              No hay rutas generadas.
             </div>
           ) : (
 						Object.entries(getRoutesByDate()).map(([key, routes]) => {
@@ -70,11 +75,17 @@ export default function Routes() {
 									<div className='mb-2'>
 										<span className='text-2xl text-gray-700'>{}</span>
 									</div>
-									{routes.length && routes?.map((route: Route) => (	
+									{routes.length && routes?.map((route: Route, index: number) => (	
 										<div key={route.id} className="bg-white rounded-xl shadow p-6 mb-5 border border-gray-100">
 											
-											<div className="flex items-center gap-2 text-indigo-600 text-lg font-semibold mb-2">
-												<AccessTimeIcon className="w-5 h-5" /> {route.start_time} - {route.end_time}
+											<div className="flex items-center justify-between gap-2 text-indigo-600 text-lg font-semibold mb-2">
+												<div><AccessTimeIcon className="w-5 h-5" /> {route.start_time} - {route.end_time}</div>
+												{canSendToRigitech(index) && 
+													<button 
+														type="button"
+														className="px-2 py-1 text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-50 transition cursor-pointer"
+													>Enviar a Rigitech</button>
+												}
 											</div>
 											<p className="text-gray-600 text-sm mb-1">
 												<span className="font-medium">Cantidad de traslados: {route.transfer_ids.length}</span>
