@@ -8,6 +8,7 @@ import { Transfer, Route } from '../utils/common.types';
 import useFetch from '../hooks/useFetch';
 import 'moment/locale/es';  
 import TransferDetailsModal from '../components/TransferDetailModal';
+import usePost from '../hooks/usePost';
 
 moment.locale('es'); 
 
@@ -21,8 +22,7 @@ export default function Routes() {
 	const [date, setDate] = useState(getTodayDate());
 	const { data: routes = [], loading, error } = useFetch<Route[]>(`routes`);
 	const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
-
-	console.log(routes)
+	const { postData, data, loading: sending, error: rigiError } = usePost<any>('/sendToRigi');
 
 	const getRoutesByDate = (): Record<string, Route[]> => {
 		if (!routes) return {};
@@ -38,6 +38,12 @@ export default function Routes() {
 	const canSendToRigitech = (index: number) => {
 		const previousRoutes = routes ? routes.slice(0, index + 1) : [];
 		return previousRoutes.every(route => route.status === "READY_FOR_START");
+	}
+
+	const sendToRigitech = (route: Route) => {
+		postData({
+      id: route.id
+    });
 	}
 
   return (
@@ -84,6 +90,7 @@ export default function Routes() {
 													<button 
 														type="button"
 														className="px-2 py-1 text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-50 transition cursor-pointer"
+														onClick={() => sendToRigitech(route)}
 													>Enviar a Rigitech</button>
 												}
 											</div>
