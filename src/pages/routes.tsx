@@ -22,7 +22,7 @@ export default function Routes() {
 	const [date, setDate] = useState(getTodayDate());
 	const { data: routes = [], loading, error } = useFetch<Route[]>(`routes`);
 	const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
-	const { postData, data, loading: sending, error: rigiError } = usePost<any>('/sendToRigi');
+	const { postData, data, loading: sending, error: rigiError } = usePost<any>('/start-route');
 
 	const getRoutesByDate = (): Record<string, Route[]> => {
 		if (!routes) return {};
@@ -42,8 +42,8 @@ export default function Routes() {
 
 	const sendToRigitech = (route: Route) => {
 		postData({
-      id: route.id
-    });
+			route_id: route.id
+		});
 	}
 
   return (
