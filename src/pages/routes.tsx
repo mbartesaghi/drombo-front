@@ -46,6 +46,16 @@ export default function Routes() {
 		});
 	}
 
+	const getOrderedTransfers = (route: Route) : Transfer[] => {
+		const order = route.routed_transfers_order.split(",");
+		const newOrder: Transfer[] = []
+		order.forEach((transferId: string) => {
+			const transfer = route.transfers.find(transfer => transfer.id === transferId);
+			if (transfer) newOrder.push(transfer)
+		})
+		return newOrder;
+	}
+
   return (
     <div className="p-6 max-w-4xl mx-auto">
 		{selectedTransfer && (
@@ -114,7 +124,7 @@ export default function Routes() {
 															<span className="ml-auto text-xs text-gray-400">{route.start_time?.slice(0, 5)}</span>
 															<span className="cursor-pointer invisible"><InfoOutlinedIcon /></span>
 														</li>
-														{route.transfers.map((t: Transfer) => (
+														{getOrderedTransfers(route).map((t: Transfer) => (
 															<li key={t.id} className="flex items-center text-sm text-gray-600 border-b pb-1 gap-8">
 																<div className='w-72'>
 																	<RoomIcon className="w-4 h-4 mr-2 text-indigo-400" />

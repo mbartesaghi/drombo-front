@@ -17,7 +17,7 @@ const navItems = [
     label: "Solicitar traslado",
   },
   {
-    to: constants.deliveryHistoryURL,
+    to: constants.transfersHistoryURL,
     icon: HistoryRoundedIcon,
     label: "Traslados realizados",
   },

@@ -13,6 +13,7 @@ import SideBar from './components/sideBar/sideBar';
 //Utils
 import * as constants from './utils/constants';
 import Routes from './pages/routes';
+import TransfersHistory from './pages/transfers';
 
 
 const MainStyle = styled('div')(({ theme }) => ({
@@ -70,8 +71,8 @@ function App() {
           element: <DeliveryRequest />
         },
         {
-          path: constants.deliveryHistoryURL,
-          element: <div>Solicitud de pedido</div>
+          path: constants.transfersHistoryURL,
+          element: <TransfersHistory />
         },
         {
           path: constants.routesURL,

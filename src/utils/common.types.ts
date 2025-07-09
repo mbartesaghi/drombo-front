@@ -33,7 +33,8 @@ export interface Route {
   transfers: Transfer[],
   status: string,
   date: string,
-  weight: number
+  weight: number,
+  routed_transfers_order: string,
 }
 
 export interface Clinic {
