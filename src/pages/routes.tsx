@@ -37,6 +37,8 @@ export default function Routes() {
 
 	const canSendToRigitech = (index: number) => {
 		const previousRoutes = routes ? routes.slice(0, index + 1) : [];
+		console.log(previousRoutes)
+		if (previousRoutes.length == 0) return true 
 		return previousRoutes.every(route => route.status === "READY_FOR_START");
 	}
 
@@ -96,13 +98,11 @@ export default function Routes() {
 											
 											<div className="flex items-center justify-between gap-2 text-indigo-600 text-lg font-semibold mb-2">
 												<div><AccessTimeIcon className="w-5 h-5" /> {route.start_time} - {route.end_time}</div>
-												{canSendToRigitech(index) && 
 													<button 
 														type="button"
 														className="px-2 py-1 text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-50 transition cursor-pointer"
 														onClick={() => sendToRigitech(route)}
 													>Enviar a Rigitech</button>
-												}
 											</div>
 											<p className="text-gray-600 text-sm mb-1">
 												<span className="font-medium">Cantidad de traslados: {route.transfer_ids.length}</span>
