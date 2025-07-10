@@ -11,7 +11,6 @@ import TableContainer from '../../components/table/tableContainer';
 const Dashboard = () => {
   const { data: transfers, loading, error } = useFetch<Transfer[]>('transfers');
 
-  console.log(transfers)
   return (
     <div className='p-6 py-2'>
       <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6">

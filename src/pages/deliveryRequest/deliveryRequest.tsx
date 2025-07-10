@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextInput from "../../components/textInput/textInput";
 import Dropdown from "../../components/dropdown/dropdown";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,6 +7,7 @@ import { Supply, Transfer } from "../../utils/common.types";
 import { getCompartmentSize, getRandomId } from "../../utils/helpers";
 import SuccessToast from "../../components/SuccessAlert";
 import ToggleSwitch from "../../components/ToggleSwitch";
+import ErrorToast from "../../components/ErrorToast"
 
 type requestTransferResponse = {
   transferId: string;
@@ -40,51 +41,114 @@ interface SupplyError {
   message: string;
 }
 
+const empty_errors = { startTime: false, startDate: false, endTime: false, endDate: false, requester: false }
+
 const DeliveryRequest = () => {
   const [transferDetails, setTransferDetails] = useState<Transfer>(EMPTY_TRANSFER_DETAILS);
   const [supplies, setSupplies] = useState([EMPTY_SUPPLY_DETAILS]);
   const { postData, data, loading, error } = usePost<requestTransferResponse>('/transfers');
   const [showToast, setShowToast] = useState(false);
-  const [errors, setErrors] = useState({ startTime: false, startDate: false, endTime: false, endDate: false, requester: false });
+  const [errors, setErrors] = useState(empty_errors);
   const [suppliesErrors, setSuppliesErrors] = useState<SupplyError[]>([])
+  const [errorMessage, setErrorMessage] = useState<string>("")
+
+
+  const getErrorMessage = ({
+    formErrors,
+    supplyErrors,
+  }: {
+    formErrors: any;
+    supplyErrors: SupplyError[];
+  }) => {
+    if (formErrors.requester) return "Error: El campo Solicitante no puede estar vacío";
+    if (formErrors.startDate || formErrors.endDate) return "Error: Las fechas ingresadas no son correctas";
+    if (formErrors.startTime || formErrors.endTime) return "Error: Los horarios ingresados no son correctos";
+    if (supplyErrors.length > 0) return `Error: ${supplyErrors[0].message}`;
+
+    return "";
+  };
 
   const handleSubmit = () => {
-    if (!validateTransferData()) return
+    const { validationSuccess: isTransferValid, newError } = validateTransferData();
+
     const validationErrors = validateSupplies(supplies);
+
     setSuppliesErrors(validationErrors);
-    console.log("validationErrors", validationErrors)
-    if(validationErrors.length > 0) return;
+
+    const hasErrors = !isTransferValid || validationErrors.length > 0;
+
+    if (hasErrors) {
+      const message = getErrorMessage({
+        formErrors: {
+          ...newError
+        },
+        supplyErrors: validationErrors
+      });
+
+
+      setErrorMessage(message);
+      return;
+    }
 
     postData({
       ...transferDetails,
-      supplies
+      supplies,
     });
+
     setShowToast(true);
   };
 
   const validateTransferData = () => {
-    if(!transferDetails.requester) {
-      setErrors({...errors, requester: true})
-      return false
+    const newError = { ...empty_errors };
+    let validationSuccess = true;
+
+    if (!transferDetails.requester) {
+      newError.requester = true;
+      validationSuccess = false;
     }
-    if(transferDetails.start_date > transferDetails.end_date) {
-      setErrors({...errors, startDate: true, endDate: true})
-      return false
+    if (!transferDetails.start_date) {
+      newError.startDate = true;
+      validationSuccess = false;
     }
-    if(transferDetails.start_time > transferDetails.end_time) {
-      setErrors({...errors, startTime: true, endTime: true})
-      return false
+    if (!transferDetails.end_date) {
+      newError.endDate = true;
+      validationSuccess = false;
     }
-    return true
-  }
+    if (!transferDetails.start_time) {
+      newError.startTime = true;
+      validationSuccess = false;
+    }
+    if (!transferDetails.end_time) {
+      newError.endTime = true;
+      validationSuccess = false;
+    }
+
+    if (transferDetails.start_date > transferDetails.end_date) {
+      newError.startDate = true;
+      newError.endDate = true;
+      validationSuccess = false;
+    }
+
+    if (transferDetails.start_time > transferDetails.end_time) {
+      newError.startTime = true;
+      newError.endTime = true;
+      validationSuccess = false;
+    }
+
+    setErrors(newError);
+    return { validationSuccess, newError };
+  };
 
   const getFieldError = (supplyId: number, field: string) =>
     suppliesErrors.find(e => e.id === supplyId && e.field === field);
 
   const validateSupplies = (supplies: Supply[]): any[] => {
     const errors: any[] = [];
+    var total_weight : number = 0;
     
     supplies.forEach((supply) => {
+      total_weight += supply.weight;
+
       if (!supply.name.trim()) {
         errors.push({
           id: supply.id,
@@ -109,6 +173,16 @@ const DeliveryRequest = () => {
         });
       }
     });
+
+    if (total_weight > 3000) {
+      supplies.forEach(sup => {
+        errors.push({
+          id: sup.id,
+          field: "weight",
+          message: "El peso total de todos los suministros no debe superar los 3000g.",
+        });
+      })
+    }
   
     return errors;
   }
@@ -137,15 +211,12 @@ const DeliveryRequest = () => {
     );
   };
 
-  console.log("transferDetails", transferDetails)
-  console.log("supplies", supplies)
-
   return (
     <div className="p-8 mb-4 max-w-5xl mx-auto bg-white shadow-md rounded-xl">
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Solicitar traslado</h2>
         <button onClick={handleSubmit} className="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition">
-          Realizar pedido
+          Realizar Traslado
         </button>
       </div>
 
@@ -157,7 +228,10 @@ const DeliveryRequest = () => {
             value={transferDetails.type}
             onChange={(v) => setTransferDetails({...transferDetails, type: v})}
           />
-          <TextInput className="col-span-2" labelText="Solicitante" type="text" onChange={(e) => setTransferDetails({...transferDetails, requester: e.target.value})} />
+          <TextInput className="col-span-2" labelText="Solicitante" type="text" 
+            onChange={(e) => setTransferDetails({...transferDetails, requester: e.target.value})}
+            error={errors.requester}   
+          />
           <Dropdown
             labelText="Policlínica"
             options={[{ value: "1", label: "Tambores" }, { value: "2", label: "Curtinas" },  { value: "3", label: "Sauce del Batovi" }, { value: "4", label: "Ansina" }, { value: "5", label: "Rivera" }, { value: "6", label: "Piedra Sola" }]}
@@ -275,6 +349,11 @@ const DeliveryRequest = () => {
         message="Traslado solicitado correctamente"
         show={showToast}
         onClose={() => setShowToast(false)}
+      />
+      <ErrorToast
+        message={errorMessage}
+        show={errorMessage != ""}
+        onClose={() => setErrorMessage("")}
       />
     </div>
   );

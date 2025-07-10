@@ -17,9 +17,9 @@ export const getTransferStatusText = (status: string | undefined) => {
 }
 
 const sizeDescriptions: Record<string, string> = {
-	SMALL: "20x20x10 cm",
-	MEDIUM: "35x25x10 cm",
-	BIG: "50x30x10 cm",
+    SMALL: "20x12x10 cm",
+    MEDIUM: "35x15x10 cm",
+    BIG: "40x15x15 cm",
 };
 
 export const getCompartmentSize = (compartment: string) => {
