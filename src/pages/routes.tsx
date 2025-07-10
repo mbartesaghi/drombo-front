@@ -37,7 +37,6 @@ export default function Routes() {
 
 	const canSendToRigitech = (index: number) => {
 		const previousRoutes = routes ? routes.slice(0, index + 1) : [];
-		console.log(previousRoutes)
 		if (previousRoutes.length == 0) return true 
 		return previousRoutes.every(route => route.status === "READY_FOR_START");
 	}

@@ -11,7 +11,6 @@ const useFetch = <T = unknown>(url: string, deps: any[] = []): FetchResult<T> =>
     const fetchData = async () => {
       try {
         const response = await axios.get<T>('http://127.0.0.1:5000/' + url);
-        console.log("response", response)
         setData(response.data);
         setLoading(false);
       } catch (error) {
