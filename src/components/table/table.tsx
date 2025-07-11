@@ -7,12 +7,13 @@ interface CustomTableProps {
 }
 
 const CustomTable: React.FC<CustomTableProps> = ({ transfers }) => {
+  console.log(transfers)
   return (
     <div className="overflow-x-auto h-full overflow-y-auto rounded-xl">
       <table className="min-w-full divide-y divide-gray-200">
         <thead className="sticky top-0 z-10 bg-white shadow-sm">
           <tr>
-            {["Fecha de Solicitud", "Rango de días", "Origen", "Destino", "Estado"].map((heading) => (
+            {["Fecha de Solicitud", "Solicitante", "Rango de días", "Origen", "Destino", "Fecha de Entrega", "Estado",].map((heading) => (
               <th
                 key={heading}
                 className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider"
@@ -29,13 +30,19 @@ const CustomTable: React.FC<CustomTableProps> = ({ transfers }) => {
                 {formatDate(row.request_date)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                {row.requester}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                 {formatDate(row.start_date)} - {formatDate(row.end_date)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                {row.type === "pedido" ? "Hospital Central" : row.clinic?.name}
+                {row.type === "Pedido" ? "Hospital Central" : row.clinic?.name}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                {row.type === "pedido" ? row.clinic?.name : "Hospital Central"}
+                {row.type === "Pedido" ? row.clinic?.name : "Hospital Central"}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                {formatDate(row.estimated_arrival_date)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
