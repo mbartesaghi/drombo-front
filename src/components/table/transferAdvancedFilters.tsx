@@ -32,6 +32,7 @@ const TransferAdvancedFilters: React.FC<TransferAdvancedFiltersProps> = ({
       >
         <option value="">Todos</option>
         <option value="pendiente">Pendiente</option>
+        <option value="planificado">Planificado</option>
         <option value="confirmado">Confirmado</option>
         <option value="entregado">Entregado</option>
         <option value="rechazado">Rechazado</option>
