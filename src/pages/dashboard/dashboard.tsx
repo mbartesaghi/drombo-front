@@ -28,7 +28,7 @@ const Dashboard = () => {
         </Card>
       </div>
       <TableContainer 
-        transfers={transfers?.filter(transfer => ["pendiente", "confirmado"].includes(transfer.status || "")) ?? []} 
+        transfers={transfers?.filter(transfer => ["pendiente", "planificado", "confirmado"].includes(transfer.status || "")) ?? []} 
         title="Solicitudes de Traslados"
       />
     </div>

@@ -9,6 +9,8 @@ import useFetch from '../hooks/useFetch';
 import 'moment/locale/es';  
 import TransferDetailsModal from '../components/TransferDetailModal';
 import usePost from '../hooks/usePost';
+import ErrorToast from '../components/ErrorToast';
+import SuccessToast from '../components/SuccessAlert';
 
 moment.locale('es'); 
 
@@ -19,8 +21,10 @@ function capitalize(str: string) {
 export default function Routes() {
 	const getTodayDate = () => new Date().toISOString().split('T')[0];
 
+	const [errorPost, setErrorPost] = useState(false);
+	const [successToast, setSuccessToast] = useState(false);
 	const [date, setDate] = useState(getTodayDate());
-	const { data: routes = [], loading, error } = useFetch<Route[]>(`routes`);
+	const { data: routes = [], loading, error, refetch } = useFetch<Route[]>(`routes`);
 	const [selectedTransfer, setSelectedTransfer] = useState<Transfer | null>(null);
 	const { postData, data, loading: sending, error: rigiError } = usePost<any>('/start-route');
 
@@ -35,11 +39,48 @@ export default function Routes() {
 		}, {});
 	}
 
-	const sendToRigitech = (route: Route) => {
-		postData({
-			route_id: route.id
-		});
-	}
+const sendToRigitech = (route: Route) => {
+  postData({ route_id: route.id })
+    .then((data: Route) => {
+		if (!data) {
+			// ⬅ No llegó data → mostramos error
+			setErrorPost(true);
+			//refetch(); // ⬅ volver a pedir las rutas
+			return;
+		}
+		console.log("data")
+		console.log(data)
+      const route_index = routes?.findIndex(r => r.id === route.id);
+      if (routes && route_index !== undefined && route_index >= 0) {
+        routes[route_index] = data;
+      }
+	  setSuccessToast(true)
+    })
+    .catch(err => {
+      console.error("Post falló:", err);
+	  setErrorPost(true);
+      refetch(); // ⬅ volver a pedir las rutas
+    });
+};
+
+
+	const getRouteStatusTag = (status: string) => {
+		switch(status) {
+			case "TENTATIVE":
+			return { label: "Tentativa", color: "bg-gray-200 text-gray-700" };
+			case "READY_FOR_START":
+			return { label: "Listo para iniciar", color: "bg-blue-200 text-blue-800" };
+			case "IN_PROCESS":
+			return { label: "En proceso", color: "bg-yellow-200 text-yellow-800" };
+			case "COMPLETED":
+			return { label: "Completado", color: "bg-green-200 text-green-800" };
+			case "CANCELED":
+			case "CANCELLED":
+			return { label: "Cancelado", color: "bg-red-200 text-red-800" };
+			default:
+			return { label: status, color: "bg-gray-200 text-gray-700" };
+		}
+	};
 
 	const getOrderedTransfers = (route: Route) : Transfer[] => {
 		const order = route.routed_transfers_order.split(",");
@@ -90,8 +131,21 @@ export default function Routes() {
 								<div key={route.id} className="bg-white rounded-xl shadow p-6 mb-5 border border-gray-100">
 									
 									<div className="flex items-center justify-between gap-2 text-indigo-600 text-lg font-semibold mb-2">
-										<div><AccessTimeIcon className="w-5 h-5" /> {route.start_time} - {route.end_time}</div>
-										{route.status === "READY_FOR_START" ?
+										<div className="flex items-center gap-2">
+											<AccessTimeIcon className="w-5 h-5" />
+											<span>{route.start_time} - {route.end_time}</span>
+											{/* Tag estado */}
+											{(() => {
+											const tag = getRouteStatusTag(route.status);
+											return (
+												<span className={`ml-3 px-2 py-0.5 rounded text-sm font-medium ${tag.color}`}>
+												{tag.label}
+												</span>
+											);
+											})()}
+										</div>
+
+										{route.status === "TENTATIVE" ?
 											<button 
 												type="button"
 												className="px-2 py-1 text-indigo-600 border border-indigo-600 rounded-md hover:bg-indigo-50 transition cursor-pointer"
@@ -104,9 +158,9 @@ export default function Routes() {
 									<p className="text-gray-600 text-sm mb-1">
 										<span className="font-medium">Cantidad de traslados: {route.transfer_ids.length}</span>
 									</p>
-									<p className="text-gray-500 text-sm mb-4">
+									 {/* <p className="text-gray-500 text-sm mb-4">
 										<span className="font-medium">Peso Total:</span> {route.weight/1000}kg
-									</p>
+									</p> */}
 
 									{route.transfers && route.transfers.length > 0 && (
 										<div className="mt-2">
@@ -156,6 +210,16 @@ export default function Routes() {
           )}
         </div>
       )}
+	<ErrorToast
+      message="Las rutas han cambiado. Por favor refresca la página e inténtalo nuevamente."
+      show={errorPost}
+      onClose={() => setErrorPost(false)}
+    />
+	<SuccessToast
+      message="La ruta se envió correctamente a RigiTech."
+      show={successToast}
+      onClose={() => setSuccessToast(false)}
+    />
     </div>
   );
 }

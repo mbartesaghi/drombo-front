@@ -37,8 +37,10 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
     switch (state) {
       case "pendiente":
         return "bg-yellow-100 text-yellow-800 ring-yellow-400/30";
-      case "confirmado":
+      case "planificado":
         return "bg-blue-100 text-blue-800 ring-blue-400/30";
+      case "confirmado":
+        return "bg-purple-100 text-purple-800 ring-purple-400/30";
       case "entregado":
         return "bg-green-100 text-green-800 ring-green-400/30";
       case "rechazado":
@@ -70,7 +72,7 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
           <Field label="Franja horaria" value={`${transfer.start_time} - ${transfer.end_time}`} />
           <Field label="Urgencia" value={getTransferUrgencyText(transfer.urgency)} />
           <Field label="Compartimiento" value={`${getCompartmentText(transfer.compartment)} (${getCompartmentSize(transfer.compartment)})`} />
-          <Field label="Peso Total" value={`${getWeight()} Kg`} />
+          <Field label="Peso Total" value={`${getWeight()}g`} />
           <Field label="Fecha estimada de llegada" value={`${transfer.estimated_arrival_date ? formatDate(transfer.estimated_arrival_date) : ""} ${transfer.estimated_arrival_time ?? "N/A"}`} />
         </div>
 

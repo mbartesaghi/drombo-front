@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import { CustomError, FetchResult } from './hooks.types';
+import { Route } from '../utils/common.types';
 
 type PostResult<T> = FetchResult<T> & {
-  postData: (body: unknown) => Promise<void>;
+  postData: (body: unknown) => Promise<T | undefined>;
 };
 
 const usePost = <T,>(url: string): PostResult<T> => {
@@ -17,6 +18,7 @@ const usePost = <T,>(url: string): PostResult<T> => {
     try {
       const response = await axios.post<T>('http://127.0.0.1:5000' + url, body);
       setData(response.data);
+      return response.data
     } catch (error) {
       const axiosError = error as AxiosError;
       setError({
