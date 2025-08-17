@@ -36,11 +36,13 @@ export default function TransferDetailsModal({ transfer, onClose }: TransferDeta
   const getStatusStyle = (state: string | undefined) => {
     switch (state) {
       case "pendiente":
-        return "bg-yellow-100 text-yellow-800 ring-yellow-400/30";
+        return "bg-gray-100 text-gray-800 ring-gray-400/30";
       case "planificado":
         return "bg-blue-100 text-blue-800 ring-blue-400/30";
       case "confirmado":
         return "bg-purple-100 text-purple-800 ring-purple-400/30";
+      case "en camino":
+        return "bg-yellow-100 text-yellow-800 ring-yellow-400/30";
       case "entregado":
         return "bg-green-100 text-green-800 ring-green-400/30";
       case "rechazado":
