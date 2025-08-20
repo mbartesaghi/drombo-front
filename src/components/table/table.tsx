@@ -6,6 +6,11 @@ interface CustomTableProps {
   transfers: Transfer[];
 }
 
+function formatTime(time: string | undefined) {
+  return time && time.length >= 8 ? 
+    time.slice(0, 5) : '';
+}
+
 const CustomTable: React.FC<CustomTableProps> = ({ transfers }) => {
   console.log(transfers)
   return (
@@ -42,7 +47,7 @@ const CustomTable: React.FC<CustomTableProps> = ({ transfers }) => {
                 {row.type === "Pedido" ? row.clinic?.name : "Hospital Central"}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                {formatDate(row.estimated_arrival_date)}
+                {formatDate(row.estimated_arrival_date)} - {formatTime(row.estimated_arrival_time)} 
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <span
