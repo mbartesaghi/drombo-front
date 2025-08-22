@@ -1,4 +1,4 @@
-# 🛰️ Drombo Frontend
+#  Drombo Frontend
 
 Frontend del proyecto **Drombo**, una propuesta académica orientada a la planificación y gestión de traslados médicos mediante drones.  
 Forma parte de la tesis de grado desarrollada en la Facultad de Ingeniería de la Universidad de la República (UdelaR).
