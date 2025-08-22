@@ -1,46 +1,88 @@
-# Getting Started with Create React App
+# 🛰️ Drombo Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend del proyecto **Drombo**, una propuesta académica orientada a la planificación y gestión de traslados médicos mediante drones.  
+Forma parte de la tesis de grado desarrollada en la Facultad de Ingeniería de la Universidad de la República (UdelaR).
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 📖 Descripción
 
-### `npm start`
+El sistema permite gestionar el envío de insumos médicos mediante drones, priorizando **eficiencia logística** y **rapidez de respuesta**.  
+A través de algoritmos de ruteo y heurísticas de optimización, la aplicación busca ofrecer una solución escalable y adaptable a distintos escenarios.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Este repositorio contiene el **frontend** de la aplicación, desarrollado en **React**, encargado de la interfaz de usuario y la visualización de las rutas generadas.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+---
 
-### `npm test`
+## ✨ Características
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- 📦 **Gestión de traslados** con distintos tipos de insumos médicos.  
+- ⚙️ Integración con heurísticas de ruteo implementadas en el backend.  
+- 💻 Interfaz intuitiva y moderna con **React + Vite**.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🛠️ Tecnologías utilizadas
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- [React](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)  
+- [Tailwind CSS](https://tailwindcss.com/)  
+- [React Router](https://reactrouter.com/)  
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Instalación y uso
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Clonar el repositorio:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+git clone https://github.com/mbartesaghi/drombo-front.git
+cd drombo-front
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Instalar dependencias:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+npm install
+```
 
-## Learn More
+Levantar el entorno de desarrollo:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run dev
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+La aplicación quedará disponible en:  
+👉 `http://localhost:5173`
+
+---
+
+## 📂 Estructura del proyecto
+
+```
+drombo-front/
+├── src/
+│   ├── assets/        # Iconos o imagenes
+│   ├── components/    # Componentes reutilizables
+│   ├── pages/         # Vistas principales
+│   ├── hooks/         # Hooks personalizados
+│   └── utils/         # Funciones reutilizables
+├── public/            # Recursos estáticos
+└── ...
+```
+
+---
+
+## 👩‍🎓 Autores
+
+- [Mariana Bartesaghi](https://github.com/mbartesaghi)  
+- [Enrique Castro] (https://github.com/kikeGit)  
+
+---
+
+## 📚 Referencia académica
+
+Este proyecto forma parte de la tesis:  
+> *"DROMBÓ: Optimización de logística sanitaria de traslados de hasta 3Kg en drones de largo alcance para policlínicas periféricas en el departamento de Tacuarembó."*  
+Universidad de la República – Facultad de Ingeniería, 2025.
+
