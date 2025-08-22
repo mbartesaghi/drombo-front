@@ -76,7 +76,7 @@ drombo-front/
 ## 👩‍🎓 Autores
 
 - [Mariana Bartesaghi](https://github.com/mbartesaghi)  
-- [Enrique Castro] (https://github.com/kikeGit)  
+- [Enrique Castro](https://github.com/kikeGit)  
 
 ---
 
